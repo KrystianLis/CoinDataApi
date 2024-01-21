@@ -1,6 +1,6 @@
-﻿using CoinDataApi.Application.Helper;
-using CoinDataApi.Core.Interfaces.Clients;
+﻿using CoinDataApi.Core.Interfaces.Clients;
 using CoinDataApi.Core.Models;
+using CoinDataApi.Tools;
 
 namespace CoinDataApi.Application.Services;
 
@@ -23,7 +23,7 @@ public class DataAggregatorService : IDataAggregatorService
             .Select(group => new AggregatedOhlcvData
             {
                 PeriodStart = group.Key,
-                PriceCloseWeighted = group.Sum(data => data.PriceClose * data.VolumeTraded) / group.Sum(data => data.VolumeTraded),
+                ClosePrice = group.Sum(data => data.PriceClose * data.VolumeTraded) / group.Sum(data => data.VolumeTraded),
                 TotalVolume = group.Sum(data => data.VolumeTraded)
             }).ToList();
 
