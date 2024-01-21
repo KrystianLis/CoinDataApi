@@ -1,6 +1,7 @@
 using CoinDataApi.Core.Interfaces.Clients;
 using CoinDataApi.Infrastructure;
 using CoinDataApi.Infrastructure.Clients;
+using CoinDataApi.Infrastructure.Errors;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,12 @@ builder.Services.AddHttpClient<ICoinApiClient, CoinApiClient>(client =>
 
 builder.Services.Configure<CoinApiOptions>(builder.Configuration.GetRequiredSection("CoinApi"));
 
+builder.Services
+    .AddErrorHandler();
+
 var app = builder.Build();
+
+app.UseErrorHandler();
 
 app.MapGet("/execute", async ([FromServices] ICoinApiClient dataService, CancellationToken token) =>
 {
