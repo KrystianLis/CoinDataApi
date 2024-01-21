@@ -121,4 +121,77 @@ public class VwapCalculatorTests
         // Assert
         result.Should().Be(0);
     }
+
+    [Fact]
+    public void GivenDataWithHighDeviation_WhenFindingPoints_ThenReturnsPointsAboveStandardDeviation()
+    {
+        // Arrange
+        var vwap = 150m;
+        var standardDeviation = 20.0;
+        var data = new List<OhlcvData>
+        {
+            new() { ClosePrice = 130m, TotalVolume = 10m },
+            new() { ClosePrice = 180m, TotalVolume = 20m },
+            new() { ClosePrice = 140m, TotalVolume = 30m }
+        };
+
+        // Act
+        var result = VwapCalculator.FindPointsWithHighDeviation(data, vwap, standardDeviation);
+
+        // Assert
+        result.Should().ContainSingle().And.Contain(x => x.ClosePrice == 180m);
+    }
+
+    [Fact]
+    public void GivenNoDataWithHighDeviation_WhenFindingPoints_ThenReturnsEmptyCollection()
+    {
+        // Arrange
+        var vwap = 150m;
+        var standardDeviation = 50.0;
+        var data = new List<OhlcvData>
+        {
+            new() { ClosePrice = 130m, TotalVolume = 10m },
+            new() { ClosePrice = 140m, TotalVolume = 20m }
+        };
+
+        // Act
+        var result = VwapCalculator.FindPointsWithHighDeviation(data, vwap, standardDeviation);
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GivenEmptyData_WhenFindingPoints_ThenReturnsEmptyCollection()
+    {
+        // Arrange
+        var vwap = 150m;
+        var standardDeviation = 20.0;
+        var data = new List<OhlcvData>();
+
+        // Act
+        var result = VwapCalculator.FindPointsWithHighDeviation(data, vwap, standardDeviation);
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GivenAllDataWithHighDeviation_WhenFindingPoints_ThenReturnsAllPoints()
+    {
+        // Arrange
+        var vwap = 100m;
+        var standardDeviation = 10.0;
+        var data = new List<OhlcvData>
+        {
+            new() { ClosePrice = 120m, TotalVolume = 10m },
+            new() { ClosePrice = 130m, TotalVolume = 20m }
+        };
+
+        // Act
+        var result = VwapCalculator.FindPointsWithHighDeviation(data, vwap, standardDeviation);
+
+        // Assert
+        result.Should().HaveCount(2).And.Contain(x => x.ClosePrice == 120m || x.ClosePrice == 130m);
+    }
 }
