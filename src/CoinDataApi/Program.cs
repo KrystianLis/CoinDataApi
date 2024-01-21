@@ -19,8 +19,8 @@ app.UseErrorHandler();
 
 app.MapGet("/execute", async ([FromServices] IDataAggregatorService dataService, CancellationToken token) =>
 {
-    var entries = await dataService.AggregateDataAsync(token);
-    return Results.Ok(entries);
+    var points = await dataService.AggregateDataAsync(token);
+    return Results.Ok(points);
 }).WithName("Get Data");
 
 app.Run();
