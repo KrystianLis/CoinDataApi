@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  coin-data-api:
+    build:
+      context: src/CoinDataApi
+      dockerfile: Dockerfile
+    environment:
+      - CoinApi__Url=https://rest.coinapi.io
+      - CoinApi__Key=your-api-key
+      - ASPNETCORE_URLS=http://+:80
+    container_name: coin-data-api
+    restart: unless-stopped
+    ports:
+      - 5016:80
