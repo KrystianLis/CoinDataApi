@@ -15,15 +15,19 @@ public class Service : IService
     {
         var bitstampData = await _client.GetOhlcvFromLastDay("bitstamp_spot_btc_usd", token: token);
         var coinbaseData = await _client.GetOhlcvFromLastDay("coinbase_spot_btc_usd", token: token);
-        
-        var combinedData = bitstampData
-            .Concat(coinbaseData)
-            .ToList();
 
-        var totalValue = combinedData.Sum(data => data.PriceClose * data.VolumeTraded);
-        var totalVolume = combinedData.Sum(data => data.VolumeTraded);
+        var combinedData = bitstampData
+            .Concat(coinbaseData);
+
+        var totals = combinedData.Aggregate(
+            new { TotalValue = 0m, TotalVolume = 0m }, 
+            (acc, data) => new 
+            {
+                TotalValue = acc.TotalValue + data.PriceClose * data.VolumeTraded,
+                TotalVolume = acc.TotalVolume + data.VolumeTraded
+            });
     
-        var vwap = totalVolume != 0 ? totalValue / totalVolume : 0;
+        var vwap = totals.TotalVolume != 0 ? totals.TotalValue / totals.TotalVolume : 0;
         
         return string.Empty;
     }
