@@ -11,7 +11,7 @@ public class VwapCalculatorTests
     public void GivenValidData_WhenCalculatingVwap_ThenReturnsCorrectVwap()
     {
         // Arrange
-        var data = new List<AggregatedOhlcvData>
+        var data = new List<OhlcvData>
         {
             new() { ClosePrice = 100m, TotalVolume = 10m },
             new() { ClosePrice = 200m, TotalVolume = 20m }
@@ -28,7 +28,7 @@ public class VwapCalculatorTests
     public void GivenEmptyData_WhenCalculatingVwap_ThenReturnsZero()
     {
         // Arrange
-        var data = new List<AggregatedOhlcvData>();
+        var data = new List<OhlcvData>();
 
         // Act
         var result = VwapCalculator.CalculateVwap(data);
@@ -41,7 +41,7 @@ public class VwapCalculatorTests
     public void GivenDataWithZeroTotalVolume_WhenCalculatingVwap_ThenReturnsZero()
     {
         // Arrange
-        var data = new List<AggregatedOhlcvData>
+        var data = new List<OhlcvData>
         {
             new() { ClosePrice = 100m, TotalVolume = 0m },
             new() { ClosePrice = 200m, TotalVolume = 0m }
@@ -59,7 +59,7 @@ public class VwapCalculatorTests
     {
         // Arrange
         var vwap = 166.67m;
-        var data = new List<AggregatedOhlcvData>
+        var data = new List<OhlcvData>
         {
             new() { ClosePrice = 160m, TotalVolume = 10m },
             new() { ClosePrice = 170m, TotalVolume = 20m },
@@ -78,7 +78,7 @@ public class VwapCalculatorTests
     {
         // Arrange
         var vwap = 166.67m;
-        var data = new List<AggregatedOhlcvData>();
+        var data = new List<OhlcvData>();
 
         // Act
         var result = VwapCalculator.CalculateStandardDeviation(data, vwap);
@@ -92,7 +92,7 @@ public class VwapCalculatorTests
     {
         // Arrange
         var vwap = 166.67m;
-        var data = new List<AggregatedOhlcvData>
+        var data = new List<OhlcvData>
         {
             new() { ClosePrice = vwap, TotalVolume = 10m }
         };
@@ -109,7 +109,7 @@ public class VwapCalculatorTests
     {
         // Arrange
         var vwap = 166.67m;
-        var data = new List<AggregatedOhlcvData>
+        var data = new List<OhlcvData>
         {
             new() { ClosePrice = vwap, TotalVolume = 10m },
             new() { ClosePrice = vwap, TotalVolume = 20m }

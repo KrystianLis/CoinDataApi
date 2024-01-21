@@ -20,11 +20,11 @@ public class DataAggregatorService : IDataAggregatorService
 
         var combinedData = bitstampData.Concat(coinbaseData)
             .GroupBy(data => data.TimePeriodStart)
-            .Select(group => new AggregatedOhlcvData
+            .Select(group => new OhlcvData
             {
-                PeriodStart = group.Key,
-                ClosePrice = group.Sum(data => data.PriceClose * data.VolumeTraded) / group.Sum(data => data.VolumeTraded),
-                TotalVolume = group.Sum(data => data.VolumeTraded)
+                TimePeriodStart = group.Key,
+                ClosePrice = group.Sum(data => data.ClosePrice * data.TotalVolume) / group.Sum(data => data.TotalVolume),
+                TotalVolume = group.Sum(data => data.TotalVolume)
             }).ToList();
 
         var vwap = VwapCalculator.CalculateVwap(combinedData);
