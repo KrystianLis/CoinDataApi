@@ -9,4 +9,7 @@ public class OhlcvData
 
     [JsonProperty("volume_traded")]
     public decimal VolumeTraded { get; set; }
+    
+    [JsonProperty("time_period_start")]
+    public DateTime TimePeriodStart { get; set; }
 }
