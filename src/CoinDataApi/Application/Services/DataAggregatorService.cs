@@ -15,9 +15,11 @@ public class DataAggregatorService : IDataAggregatorService
 
     public async Task<IEnumerable<OhlcvData>> AggregateDataAsync(CancellationToken token = default)
     {
+        // Due to the limitations, it is not possible to use Task.WhenAll()
         var bitstampData = await _client.GetOhlcvFromLastDay("bitstamp_spot_btc_usd", token: token);
         var coinbaseData = await _client.GetOhlcvFromLastDay("coinbase_spot_btc_usd", token: token);
 
+        // Combine data from two sources and calculate the weighted average
         var combinedData = bitstampData.Concat(coinbaseData)
             .GroupBy(data => data.TimePeriodStart)
             .Select(group => new OhlcvData
