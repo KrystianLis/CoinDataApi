@@ -18,4 +18,20 @@ public static class VwapCalculator
 
         return count > 0 ? Math.Sqrt(squaredDifferencesSum / count) : 0;
     }
+    
+    public static IEnumerable<OhlcvData> FindPointsWithHighDeviation(IReadOnlyList<OhlcvData> data, decimal vwap, double standardDeviation)
+    {
+        var result = new List<OhlcvData>();
+
+        foreach (var point in data)
+        {
+            var deviation = Math.Abs(point.ClosePrice - vwap);
+            if (deviation > (decimal)standardDeviation)
+            {
+                result.Add(point);
+            }
+        }
+
+        return result;
+    }
 }

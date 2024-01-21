@@ -13,7 +13,7 @@ public class DataAggregatorService : IDataAggregatorService
         _client = client;
     }
 
-    public async Task<string> AggregateDataAsync(CancellationToken token = default)
+    public async Task<IEnumerable<OhlcvData>> AggregateDataAsync(CancellationToken token = default)
     {
         var bitstampData = await _client.GetOhlcvFromLastDay("bitstamp_spot_btc_usd", token: token);
         var coinbaseData = await _client.GetOhlcvFromLastDay("coinbase_spot_btc_usd", token: token);
@@ -29,7 +29,9 @@ public class DataAggregatorService : IDataAggregatorService
 
         var vwap = VwapCalculator.CalculateVwap(combinedData);
         var standardDeviation = VwapCalculator.CalculateStandardDeviation(combinedData, vwap);
+
+        var resultPoints = VwapCalculator.FindPointsWithHighDeviation(combinedData, vwap, standardDeviation);
         
-        return string.Empty;
+        return resultPoints;
     }
 }
