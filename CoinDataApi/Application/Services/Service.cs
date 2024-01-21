@@ -1,5 +1,6 @@
 ﻿using CoinDataApi.Application.Helper;
 using CoinDataApi.Core.Interfaces.Clients;
+using CoinDataApi.Core.Models;
 
 namespace CoinDataApi.Application.Services;
 
@@ -27,6 +28,7 @@ public class Service : IService
             }).ToList();
 
         var vwap = VwapCalculator.CalculateVwap(combinedData);
+        var standardDeviation = VwapCalculator.CalculateStandardDeviation(combinedData, vwap);
         
         return string.Empty;
     }
