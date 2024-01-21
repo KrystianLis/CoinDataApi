@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace CoinDataApi.Infrastructure.Errors;
 
@@ -36,7 +36,7 @@ public class ErrorHandlerMiddleware : IMiddleware
             ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace!)
             : new ApiException((int)HttpStatusCode.InternalServerError);
 
-        var json = JsonConvert.SerializeObject(response);
+        var json = JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(json);
 
     }

@@ -1,15 +1,18 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace CoinDataApi.Core.Models;
 
 public class OhlcvData
 {
-    [JsonProperty("price_close")]
+    [JsonPropertyName("price_close")]
     public decimal ClosePrice { get; set; }
 
-    [JsonProperty("volume_traded")]
+    [JsonPropertyName("volume_traded")]
     public decimal TotalVolume { get; set; }
     
-    [JsonProperty("time_period_start")]
+    [JsonPropertyName("time_period_start")]
     public DateTime TimePeriodStart { get; set; }
+    
+    [JsonPropertyName("time_period_end")]
+    public DateTime TimePeriodEnd { get; set; }
 }

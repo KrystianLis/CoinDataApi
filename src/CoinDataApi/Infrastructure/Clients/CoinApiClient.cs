@@ -1,8 +1,8 @@
 ﻿using System.Net.Http.Headers;
+using System.Text.Json;
 using CoinDataApi.Core.Interfaces.Clients;
 using CoinDataApi.Core.Models;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace CoinDataApi.Infrastructure.Clients;
 
@@ -30,6 +30,6 @@ public class CoinApiClient : ICoinApiClient
             throw new Exception(responseMessage);
         }
 
-        return JsonConvert.DeserializeObject<IReadOnlyCollection<OhlcvData>>(responseMessage)!;
+        return JsonSerializer.Deserialize<IReadOnlyCollection<OhlcvData>>(responseMessage)!;
     }
 }

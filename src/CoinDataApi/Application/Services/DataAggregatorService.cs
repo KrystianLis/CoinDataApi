@@ -23,6 +23,7 @@ public class DataAggregatorService : IDataAggregatorService
             .Select(group => new OhlcvData
             {
                 TimePeriodStart = group.Key,
+                TimePeriodEnd = group.First().TimePeriodEnd,
                 ClosePrice = group.Sum(data => data.ClosePrice * data.TotalVolume) / group.Sum(data => data.TotalVolume),
                 TotalVolume = group.Sum(data => data.TotalVolume)
             }).ToList();
