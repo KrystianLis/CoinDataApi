@@ -4,11 +4,11 @@ using CoinDataApi.Core.Models;
 
 namespace CoinDataApi.Application.Services;
 
-public class Service : IService
+public class DataAggregatorService : IDataAggregatorService
 {
     private readonly ICoinApiClient _client;
 
-    public Service(ICoinApiClient client)
+    public DataAggregatorService(ICoinApiClient client)
     {
         _client = client;
     }
@@ -32,11 +32,4 @@ public class Service : IService
         
         return string.Empty;
     }
-}
-
-public class AggregatedOhlcvData
-{
-    public DateTime PeriodStart { get; set; }
-    public decimal PriceCloseWeighted { get; set; }
-    public decimal TotalVolume { get; set; }
 }

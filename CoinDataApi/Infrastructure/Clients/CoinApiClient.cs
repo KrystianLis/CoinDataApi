@@ -21,7 +21,7 @@ public class CoinApiClient : ICoinApiClient
         bool includeEmptyItems = false, CancellationToken token = default)
     {
         var httpResponseMessage = await _httpClient.GetAsync(
-            $"/v1/ohlcv/{symbolId}/latest?period_id=1DAY&limit=1&include_empty_items={includeEmptyItems}", token);
+            $"/v1/ohlcv/{symbolId}/latest?period_id=1HRS&limit=24&include_empty_items={includeEmptyItems}", token);
 
         var responseMessage = await httpResponseMessage.Content.ReadAsStringAsync(token);
 

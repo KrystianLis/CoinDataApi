@@ -1,6 +1,6 @@
 ﻿namespace CoinDataApi.Application.Services;
 
-public interface IService
+public interface IDataAggregatorService
 {
     public Task<string> AggregateDataAsync(CancellationToken token = default);
 }

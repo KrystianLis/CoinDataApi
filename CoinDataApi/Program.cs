@@ -1,6 +1,5 @@
 using CoinDataApi.Application;
 using CoinDataApi.Application.Services;
-using CoinDataApi.Core.Interfaces.Clients;
 using CoinDataApi.Infrastructure;
 using CoinDataApi.Infrastructure.Errors;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +17,9 @@ var app = builder.Build();
 
 app.UseErrorHandler();
 
-app.MapGet("/execute", async ([FromServices] IService dataService, CancellationToken token) =>
+app.MapGet("/execute", async ([FromServices] IDataAggregatorService dataService, CancellationToken token) =>
 {
-    var entries = await dataService.AggregateDataAsync();
+    var entries = await dataService.AggregateDataAsync(token);
     return Results.Ok(entries);
 }).WithName("Get Data");
 

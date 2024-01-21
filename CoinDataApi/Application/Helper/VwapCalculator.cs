@@ -1,5 +1,4 @@
-﻿using CoinDataApi.Application.Services;
-using CoinDataApi.Core.Models;
+﻿using CoinDataApi.Core.Models;
 
 namespace CoinDataApi.Application.Helper;
 
