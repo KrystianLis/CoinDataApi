@@ -1,6 +1,6 @@
 ﻿using CoinDataApi.Core.Models;
 
-namespace CoinDataApi.Tools;
+namespace CoinDataApi.Application.Tools;
 
 public static class VwapCalculator
 {

@@ -1,6 +1,6 @@
-﻿using CoinDataApi.Core.Interfaces.Clients;
+﻿using CoinDataApi.Application.Tools;
+using CoinDataApi.Core.Interfaces.Clients;
 using CoinDataApi.Core.Models;
-using CoinDataApi.Tools;
 
 namespace CoinDataApi.Application.Services;
 
@@ -13,11 +13,11 @@ public class DataAggregatorService : IDataAggregatorService
         _client = client;
     }
 
-    public async Task<IEnumerable<OhlcvData>> AggregateDataAsync(CancellationToken token = default)
+    public async Task<IEnumerable<OhlcvData>> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default)
     {
-        // Due to the limitations, it is not possible to use Task.WhenAll()
-        var bitstampData = await _client.GetOhlcvFromLastDay("bitstamp_spot_btc_usd", token: token);
-        var coinbaseData = await _client.GetOhlcvFromLastDay("coinbase_spot_btc_usd", token: token);
+        // Due to the CoinApi restrictions, it is not possible to use Task.WhenAll()
+        var bitstampData = await _client.GetHistoricalData("bitstamp_spot_btc_usd", timeStart, timeEnd, token: token);
+        var coinbaseData = await _client.GetHistoricalData("coinbase_spot_btc_usd", timeStart, timeEnd, token: token);
 
         // Combine data from two sources and calculate the weighted average
         var combinedData = bitstampData.Concat(coinbaseData)
@@ -32,9 +32,10 @@ public class DataAggregatorService : IDataAggregatorService
 
         var vwap = VwapCalculator.CalculateVwap(combinedData);
         var standardDeviation = VwapCalculator.CalculateStandardDeviation(combinedData, vwap);
-
+        
         var resultPoints = VwapCalculator.FindPointsWithHighDeviation(combinedData, vwap, standardDeviation);
         
+        //// TODO: DTO
         return resultPoints;
     }
 }

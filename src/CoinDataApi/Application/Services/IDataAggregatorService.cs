@@ -4,5 +4,5 @@ namespace CoinDataApi.Application.Services;
 
 public interface IDataAggregatorService
 {
-    public Task<IEnumerable<OhlcvData>> AggregateDataAsync(CancellationToken token = default);
+    public Task<IEnumerable<OhlcvData>> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default);
 }

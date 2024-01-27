@@ -17,11 +17,11 @@ public class CoinApiClient : ICoinApiClient
         _httpClient.DefaultRequestHeaders.Add("X-CoinAPI-Key", options.Value.Key);
     }
 
-    public async Task<IReadOnlyCollection<OhlcvData>> GetOhlcvFromLastDay(string symbolId,
-        bool includeEmptyItems = false, CancellationToken token = default)
+    public async Task<IReadOnlyCollection<OhlcvData>> GetHistoricalData(string symbolId, string timeStart, string timeEnd,
+        string periodId = "1DAY", bool includeEmptyItems = false, CancellationToken token = default)
     {
         var httpResponseMessage = await _httpClient.GetAsync(
-            $"/v1/ohlcv/{symbolId}/latest?period_id=1HRS&limit=24&include_empty_items={includeEmptyItems}", token);
+            $"/v1/ohlcv/{symbolId}/history?period_id={periodId}&time_start={timeStart}&time_end={timeEnd}&include_empty_items={includeEmptyItems}", token);
 
         var responseMessage = await httpResponseMessage.Content.ReadAsStringAsync(token);
 

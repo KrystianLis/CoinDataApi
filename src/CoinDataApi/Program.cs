@@ -17,9 +17,24 @@ var app = builder.Build();
 
 app.UseErrorHandler();
 
-app.MapGet("/execute", async ([FromServices] IDataAggregatorService dataService, CancellationToken token) =>
+app.MapGet("/execute", async ([FromQuery(Name = "time_start")] string timeStart, [FromQuery(Name = "time_end")] string timeEnd, [FromServices] IDataAggregatorService dataService, CancellationToken token) =>
 {
-    var points = await dataService.AggregateDataAsync(token);
+    if (!DateTime.TryParse(timeStart, null, System.Globalization.DateTimeStyles.AdjustToUniversal, out var startTimeUtc))
+    {
+        return Results.BadRequest("Invalid timeStart format. Please use ISO 8601 format in UTC.");
+    }
+
+    if (!DateTime.TryParse(timeEnd, null, System.Globalization.DateTimeStyles.AdjustToUniversal, out var endTimeUtc))
+    {
+        return Results.BadRequest("Invalid timeEnd format. Please use ISO 8601 format in UTC.");
+    }
+    
+    if (endTimeUtc < startTimeUtc)
+    {
+        return Results.BadRequest("time_end must not be earlier than time_start.");
+    }
+    
+    var points = await dataService.AggregateDataAsync(timeStart, timeEnd, token);
     return Results.Ok(points);
 }).WithName("Get Data");
 

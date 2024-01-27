@@ -1,5 +1,5 @@
-﻿using CoinDataApi.Core.Models;
-using CoinDataApi.Tools;
+﻿using CoinDataApi.Application.Tools;
+using CoinDataApi.Core.Models;
 using FluentAssertions;
 using Xunit;
 
