@@ -18,7 +18,6 @@ builder.Services
 
 builder.Services.AddScoped<IValidator<DateRangeQuery>, DateRangeQueryValidator>();
 
-
 var app = builder.Build();
 
 app.UseErrorHandler();

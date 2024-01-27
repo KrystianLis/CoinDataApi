@@ -27,31 +27,10 @@ public class DataAggregatorService : IDataAggregatorService
 
         await Task.WhenAll(latest24HDataTask, historicalDataTask);
 
-        var (vwap24H, standardDeviation24H, pointsWithHighDeviation24H) = latest24HDataTask.Result;
-        var (vwap, standardDeviation, pointsWithHighDeviation) = historicalDataTask.Result;
+        var latest24HData = latest24HDataTask.Result;
+        var historicalData = historicalDataTask.Result;
         
-        return new PriceAnalysisResultDto
-        {
-            Vwap24H = vwap24H,
-            StandardDeviation24H = standardDeviation24H,
-            PointsWithHighDeviation24H = pointsWithHighDeviation24H.Select(x => new OhlcvDataDto
-            {
-                ClosePrice = x.ClosePrice,
-                TimePeriodStart = x.TimePeriodStart,
-                TimePeriodEnd = x.TimePeriodEnd,
-                TotalVolume = x.TotalVolume
-            }),
-
-            Vwap = vwap,
-            StandardDeviation = standardDeviation,
-            PointsWithHighDeviation = pointsWithHighDeviation.Select(x => new OhlcvDataDto
-            {
-                ClosePrice = x.ClosePrice,
-                TimePeriodStart = x.TimePeriodStart,
-                TimePeriodEnd = x.TimePeriodEnd,
-                TotalVolume = x.TotalVolume
-            })
-        };
+        return AsDto(latest24HData, historicalData);
     }
 
     private static (decimal vwap24H, double standardDeviation24H, IEnumerable<OhlcvData> pointsWithHighDeviation24H)
@@ -79,5 +58,33 @@ public class DataAggregatorService : IDataAggregatorService
                 TotalVolume = group.Sum(data => data.TotalVolume)
             }).ToList();
         return combinedData;
+    }
+    
+    private PriceAnalysisResultDto AsDto(
+        (decimal vwap24H, double standardDeviation24H, IEnumerable<OhlcvData> pointsWithHighDeviation24H) latest24HData,
+        (decimal vwap, double standardDeviation, IEnumerable<OhlcvData> pointsWithHighDeviation) historicalData)
+    {
+        return new PriceAnalysisResultDto
+        {
+            Vwap24H = latest24HData.vwap24H,
+            StandardDeviation24H = latest24HData.standardDeviation24H,
+            PointsWithHighDeviation24H = latest24HData.pointsWithHighDeviation24H.Select(x => new OhlcvDataDto
+            {
+                ClosePrice = x.ClosePrice,
+                TimePeriodStart = x.TimePeriodStart,
+                TimePeriodEnd = x.TimePeriodEnd,
+                TotalVolume = x.TotalVolume
+            }),
+
+            Vwap = historicalData.vwap,
+            StandardDeviation = historicalData.standardDeviation,
+            PointsWithHighDeviation = historicalData.pointsWithHighDeviation.Select(x => new OhlcvDataDto
+            {
+                ClosePrice = x.ClosePrice,
+                TimePeriodStart = x.TimePeriodStart,
+                TimePeriodEnd = x.TimePeriodEnd,
+                TotalVolume = x.TotalVolume
+            })
+        };
     }
 }
