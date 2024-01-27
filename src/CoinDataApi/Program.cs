@@ -2,6 +2,9 @@ using CoinDataApi.Application;
 using CoinDataApi.Application.Services;
 using CoinDataApi.Infrastructure;
 using CoinDataApi.Infrastructure.Errors;
+using CoinDataApi.Web.Query;
+using CoinDataApi.Web.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,28 +16,23 @@ builder.Services
 builder.Services
     .AddErrorHandler();
 
+builder.Services.AddScoped<IValidator<DateRangeQuery>, DateRangeQueryValidator>();
+
+
 var app = builder.Build();
 
 app.UseErrorHandler();
 
-app.MapGet("/execute", async ([FromQuery(Name = "time_start")] string timeStart, [FromQuery(Name = "time_end")] string timeEnd, [FromServices] IDataAggregatorService dataService, CancellationToken token) =>
+app.MapGet("/execute", async ([AsParameters]DateRangeQuery query, IValidator<DateRangeQuery> validator, [FromServices] IDataAggregatorService dataService, CancellationToken token) =>
 {
-    if (!DateTime.TryParse(timeStart, null, System.Globalization.DateTimeStyles.AdjustToUniversal, out var startTimeUtc))
-    {
-        return Results.BadRequest("Invalid timeStart format. Please use ISO 8601 format in UTC.");
-    }
+    var validationResult = await validator.ValidateAsync(query, token);
 
-    if (!DateTime.TryParse(timeEnd, null, System.Globalization.DateTimeStyles.AdjustToUniversal, out var endTimeUtc))
+    if (!validationResult.IsValid)
     {
-        return Results.BadRequest("Invalid timeEnd format. Please use ISO 8601 format in UTC.");
+        return Results.BadRequest(validationResult.ToDictionary());
     }
     
-    if (endTimeUtc < startTimeUtc)
-    {
-        return Results.BadRequest("time_end must not be earlier than time_start.");
-    }
-    
-    var points = await dataService.AggregateDataAsync(timeStart, timeEnd, token);
+    var points = await dataService.AggregateDataAsync(query.TimeStart!, query.TimeEnd!, token);
     return Results.Ok(points);
 }).WithName("Get Data");
 
