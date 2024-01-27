@@ -4,5 +4,5 @@ namespace CoinDataApi.Application.Services;
 
 public interface IDataAggregatorService
 {
-    public Task<PriceAnalysisResultDto> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default);
+    public Task<PriceAnalysisResultDto> AggregateDataAsync(string timeStart, string timeEnd, string periodId, CancellationToken token = default);
 }

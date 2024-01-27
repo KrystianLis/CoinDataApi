@@ -2,4 +2,4 @@
 
 namespace CoinDataApi.Web.Query;
 
-public record DateRangeQuery([FromQuery]string? TimeStart, [FromQuery]string? TimeEnd);
+public record DateRangeQuery([FromQuery]string? TimeStart, [FromQuery]string? TimeEnd, [FromQuery]string? PeriodId);

@@ -32,7 +32,7 @@ app.MapGet("/execute", async ([AsParameters]DateRangeQuery query, IValidator<Dat
         return Results.BadRequest(validationResult.ToDictionary());
     }
     
-    var points = await dataService.AggregateDataAsync(query.TimeStart!, query.TimeEnd!, token);
+    var points = await dataService.AggregateDataAsync(query.TimeStart!, query.TimeEnd!, query.PeriodId, token);
     return Results.Ok(points);
 }).WithName("Get Data");
 
