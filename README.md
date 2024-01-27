@@ -18,4 +18,4 @@ After setting the key, execute the following commands:
 docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml up -d
 ```
-Now you can make requests to the API at http://localhost:5016/execute
+Now you can make requests to the API at for e.g., http://localhost:5016/execute?TimeStart=2024-01-01T00:00:00Z&TimeEnd=2024-01-26T00:00:00Z&PeriodId=1DAY
