@@ -1,8 +1,8 @@
-﻿using CoinDataApi.Core.Models;
+﻿using CoinDataApi.Application.DTOs;
 
 namespace CoinDataApi.Application.Services;
 
 public interface IDataAggregatorService
 {
-    public Task<IEnumerable<OhlcvData>> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default);
+    public Task<PriceAnalysisResultDto> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default);
 }

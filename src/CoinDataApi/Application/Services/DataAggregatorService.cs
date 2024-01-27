@@ -1,4 +1,5 @@
-﻿using CoinDataApi.Application.Tools;
+﻿using CoinDataApi.Application.DTOs;
+using CoinDataApi.Application.Tools;
 using CoinDataApi.Core.Interfaces.Clients;
 using CoinDataApi.Core.Models;
 
@@ -13,7 +14,7 @@ public class DataAggregatorService : IDataAggregatorService
         _client = client;
     }
 
-    public async Task<IEnumerable<OhlcvData>> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default)
+    public async Task<PriceAnalysisResultDto> AggregateDataAsync(string timeStart, string timeEnd, CancellationToken token = default)
     {
         // Due to the CoinApi restrictions, it is not possible to use Task.WhenAll()
         var bitstampData = await _client.GetHistoricalData("bitstamp_spot_btc_usd", timeStart, timeEnd, token: token);
@@ -33,9 +34,19 @@ public class DataAggregatorService : IDataAggregatorService
         var vwap = VwapCalculator.CalculateVwap(combinedData);
         var standardDeviation = VwapCalculator.CalculateStandardDeviation(combinedData, vwap);
         
-        var resultPoints = VwapCalculator.FindPointsWithHighDeviation(combinedData, vwap, standardDeviation);
+        var pointsWithHighDeviation = VwapCalculator.FindPointsWithHighDeviation(combinedData, vwap, standardDeviation);
         
-        //// TODO: DTO
-        return resultPoints;
+        return new PriceAnalysisResultDto
+        {
+            Vwap = vwap,
+            StandardDeviation = standardDeviation,
+            PointsWithHighDeviation = pointsWithHighDeviation.Select(x => new OhlcvDataDto
+            {
+                ClosePrice = x.ClosePrice,
+                TimePeriodStart = x.TimePeriodStart,
+                TimePeriodEnd = x.TimePeriodEnd,
+                TotalVolume = x.TotalVolume
+            })
+        };
     }
 }
